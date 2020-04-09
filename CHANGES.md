@@ -1,5 +1,18 @@
 # CHANGES
 
+## 0.5.1a0 (2020-04-09)
+
+*Notes:*
+
+This is a black build with extra debug information for troubleshotting
+connection issues. Do not use unless instructed to do so.
+
+*All changes:*
+
+```
+f4978f7 Add some temporary extra logging
+```
+
 ## 0.5.1 (2020-04-02)
 
 *Changes:*
