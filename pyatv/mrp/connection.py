@@ -43,6 +43,10 @@ class MrpConnection(
             else:
                 self.atv.listener.connection_lost(exc)
 
+    def eof_received(self):
+        _LOGGER.debug("Received EOF from server")
+        self._transport.close()
+
     def enable_encryption(self, output_key, input_key):
         """Enable encryption with the specified keys."""
         self._chacha = chacha20.Chacha20Cipher(output_key, input_key)

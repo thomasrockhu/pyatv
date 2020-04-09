@@ -40,6 +40,7 @@ class MrpProtocol:
         self._outstanding = {}
         self._listeners = {}
         self._initial_message_sent = False
+        self._task = None
 
     def add_listener(self, listener, message_type, data=None):
         """Add a listener that will receice incoming messages."""
@@ -82,6 +83,16 @@ class MrpProtocol:
         await self.send(messages.client_updates_config())
         await self.send_and_receive(messages.get_keyboard_session())
 
+        self._task = self.loop.create_task(self._periodic_ping())
+
+    async def _periodic_ping(self):
+        _LOGGER.debug("Starting periodic ping")
+        while True:
+            _LOGGER.debug("Sending periodic ping (transport: %s)", self.connection._transport)
+            await self.send_and_receive(messages.set_connection_state())
+            _LOGGER.debug("Got answer to ping, sleeping...")
+            await asyncio.sleep(10)
+
     def stop(self):
         """Disconnect from device."""
         if self._outstanding:
@@ -92,6 +103,8 @@ class MrpProtocol:
         self._initial_message_sent = False
         self._outstanding = {}
         self.connection.close()
+        if self._task:
+            self._task.cancel()
 
     async def _connect_and_encrypt(self):
         if not self.connection.connected:
