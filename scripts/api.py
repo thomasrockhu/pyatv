@@ -18,6 +18,7 @@ def _filter_func(doc):
         "UnicastMdnsScanner",
         "ZeroconfScanner",
         "airplay",
+        "companion",
         "mrp",
         "dmap",
         "support",

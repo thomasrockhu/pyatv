@@ -10,6 +10,7 @@ ADDRESS_2 = "192.168.0.1"
 NAME = "Alice"
 PORT_1 = 1234
 PORT_2 = 5678
+PORT_3 = 1111
 IDENTIFIER_1 = "id1"
 IDENTIFIER_2 = "id2"
 IDENTIFIER_3 = "id3"
@@ -37,6 +38,7 @@ class ConfTest(unittest.TestCase):
         self.airplay_service = conf.AirPlayService(
             IDENTIFIER_3, PORT_1, properties=AIRPLAY_PROPERTIES
         )
+        self.companion_service = conf.CompanionService(PORT_3)
 
     def test_address_and_name(self):
         self.assertEqual(self.config.address, ADDRESS_1)
@@ -53,18 +55,23 @@ class ConfTest(unittest.TestCase):
         self.config.add_service(self.dmap_service)
         self.config.add_service(self.mrp_service)
         self.config.add_service(self.airplay_service)
+        self.config.add_service(self.companion_service)
 
         services = self.config.services
-        self.assertEqual(len(services), 3)
+        self.assertEqual(len(services), 4)
 
         self.assertIn(self.dmap_service, services)
         self.assertIn(self.mrp_service, services)
         self.assertIn(self.airplay_service, services)
+        self.assertIn(self.companion_service, services)
 
         self.assertEqual(self.config.get_service(Protocol.DMAP), self.dmap_service)
         self.assertEqual(self.config.get_service(Protocol.MRP), self.mrp_service)
         self.assertEqual(
             self.config.get_service(Protocol.AirPlay), self.airplay_service
+        )
+        self.assertEqual(
+            self.config.get_service(Protocol.Companion), self.companion_service
         )
 
     def test_identifier_order(self):

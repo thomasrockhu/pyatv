@@ -95,6 +95,28 @@ def device_service(service_name, atv_name, address):
     )
 
 
+def companion_service(service_name, address, port):
+    """Create a service representing an Apple TV with Companion link."""
+    props = {
+        b"rpHA": b"33efedd528a",
+        b"rpHN": b"86d62e4f39a1",
+        b"rpVr": b"195.2",
+        b"rpMd": b"AppleTV6,2",
+        b"rpFl": b"0x36782",
+        b"rpAD": b"d55093ae01f0",
+        b"rpHI": b"fab8fce34e61",
+        b"rpBA": b"E6:B4:F3:BC:59:A0",
+    }
+
+    return ServiceInfo(
+        "_companion-link._tcp.local.",
+        service_name + "._companion-link._tcp.local.",
+        address=address,
+        port=port,
+        properties=props,
+    )
+
+
 class ServiceBrowserStub:
     """Stub for ServiceBrowser."""
 

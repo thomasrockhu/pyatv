@@ -158,7 +158,7 @@ class BaseService:
 
     def __init__(
         self,
-        identifier: str,
+        identifier: Optional[str],
         protocol: Protocol,
         port: int,
         properties: Optional[Dict[str, str]],
@@ -171,7 +171,7 @@ class BaseService:
         self.properties = properties or {}
 
     @property
-    def identifier(self) -> str:
+    def identifier(self) -> Optional[str]:
         """Return unique identifier associated with this service."""
         return self.__identifier
 

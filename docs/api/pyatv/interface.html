@@ -377,7 +377,7 @@ class BaseService:
 
     def __init__(
         self,
-        identifier: str,
+        identifier: Optional[str],
         protocol: Protocol,
         port: int,
         properties: Optional[Dict[str, str]],
@@ -390,7 +390,7 @@ class BaseService:
         self.properties = properties or {}
 
     @property
-    def identifier(self) -&gt; str:
+    def identifier(self) -&gt; Optional[str]:
         &#34;&#34;&#34;Return unique identifier associated with this service.&#34;&#34;&#34;
         return self.__identifier
 
@@ -1474,7 +1474,7 @@ async def connect(self) -&gt; None:
 </dd>
 <dt id="pyatv.interface.BaseService"><code class="flex name class">
 <span>class <span class="ident">BaseService</span></span>
-<span>(</span><span>identifier: str, protocol: <a title="pyatv.const.Protocol" href="const#pyatv.const.Protocol">Protocol</a>, port: int, properties: Union[Dict[str, str], NoneType])</span>
+<span>(</span><span>identifier: Union[str, NoneType], protocol: <a title="pyatv.const.Protocol" href="const#pyatv.const.Protocol">Protocol</a>, port: int, properties: Union[Dict[str, str], NoneType])</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Base class for protocol services.</p>
@@ -1488,7 +1488,7 @@ async def connect(self) -&gt; None:
 
     def __init__(
         self,
-        identifier: str,
+        identifier: Optional[str],
         protocol: Protocol,
         port: int,
         properties: Optional[Dict[str, str]],
@@ -1501,7 +1501,7 @@ async def connect(self) -&gt; None:
         self.properties = properties or {}
 
     @property
-    def identifier(self) -&gt; str:
+    def identifier(self) -&gt; Optional[str]:
         &#34;&#34;&#34;Return unique identifier associated with this service.&#34;&#34;&#34;
         return self.__identifier
 
@@ -1519,12 +1519,13 @@ async def connect(self) -&gt; None:
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li><a title="pyatv.conf.AirPlayService" href="conf#pyatv.conf.AirPlayService">AirPlayService</a></li>
+<li><a title="pyatv.conf.CompanionService" href="conf#pyatv.conf.CompanionService">CompanionService</a></li>
 <li><a title="pyatv.conf.DmapService" href="conf#pyatv.conf.DmapService">DmapService</a></li>
 <li><a title="pyatv.conf.MrpService" href="conf#pyatv.conf.MrpService">MrpService</a></li>
 </ul>
 <h3>Instance variables</h3>
 <dl>
-<dt id="pyatv.interface.BaseService.identifier"><code class="name">var <span class="ident">identifier</span> -> str</code></dt>
+<dt id="pyatv.interface.BaseService.identifier"><code class="name">var <span class="ident">identifier</span> -> Union[str, NoneType]</code></dt>
 <dd>
 <section class="desc"><p>Return unique identifier associated with this service.</p></section>
 <details class="source">
@@ -1532,7 +1533,7 @@ async def connect(self) -&gt; None:
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@property
-def identifier(self) -&gt; str:
+def identifier(self) -&gt; Optional[str]:
     &#34;&#34;&#34;Return unique identifier associated with this service.&#34;&#34;&#34;
     return self.__identifier</code></pre>
 </details>
@@ -2153,6 +2154,7 @@ async def playing(self) -&gt; Playing:
 <h3>Subclasses</h3>
 <ul class="hlist">
 <li>pyatv.airplay.pairing.AirPlayPairingHandler</li>
+<li>pyatv.companion.pairing.CompanionPairingHandler</li>
 <li>pyatv.dmap.pairing.DmapPairingHandler</li>
 <li>pyatv.mrp.pairing.MrpPairingHandler</li>
 </ul>

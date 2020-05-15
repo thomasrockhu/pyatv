@@ -47,6 +47,7 @@ class ConvertTest(unittest.TestCase):
         self.assertEqual("MRP", convert.protocol_str(Protocol.MRP))
         self.assertEqual("DMAP", convert.protocol_str(Protocol.DMAP))
         self.assertEqual("AirPlay", convert.protocol_str(Protocol.AirPlay))
+        self.assertEqual("Companion", convert.protocol_str(Protocol.Companion))
 
     def test_unknown_protocol_str(self):
         self.assertEqual("Unknown", convert.protocol_str("invalid"))

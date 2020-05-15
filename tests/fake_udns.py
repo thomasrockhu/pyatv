@@ -43,6 +43,13 @@ def device_service(service_name, atv_name):
     return ("_touch-able._tcp.local", service)
 
 
+def companion_service(service_name, port):
+    service = FakeDnsService(
+        name=service_name, port=port, properties={"rpHA": "33efedd528a"}
+    )
+    return ("_companion-link._tcp.local", service)
+
+
 def _mkanswer(qname, full_name):
     return udns.DnsAnswer(
         qname, udns.QTYPE_PTR, DEFAULT_QCLASS, DEFAULT_TTL, 0, full_name

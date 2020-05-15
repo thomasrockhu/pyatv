@@ -56,6 +56,7 @@ import netifaces
 from pyatv import conf, exceptions, interface
 from pyatv.airplay import AirPlayStreamAPI
 from pyatv.const import Protocol
+from pyatv.companion.pairing import CompanionPairingHandler
 from pyatv.dmap import DmapAppleTV
 from pyatv.dmap.pairing import DmapPairingHandler
 from pyatv.mrp import MrpAppleTV
@@ -70,12 +71,14 @@ HOMESHARING_SERVICE = &#34;_appletv-v2._tcp.local.&#34;
 DEVICE_SERVICE = &#34;_touch-able._tcp.local.&#34;
 MEDIAREMOTE_SERVICE = &#34;_mediaremotetv._tcp.local.&#34;
 AIRPLAY_SERVICE = &#34;_airplay._tcp.local.&#34;
+COMPANION_SERVICE = &#34;_companion-link._tcp.local.&#34;
 
 ALL_SERVICES = [
     HOMESHARING_SERVICE,
     DEVICE_SERVICE,
     MEDIAREMOTE_SERVICE,
     AIRPLAY_SERVICE,
+    COMPANION_SERVICE,
 ]
 
 # These ports have been &#34;arbitrarily&#34; chosen (see issue #580) because a device normally
@@ -119,6 +122,7 @@ class BaseScanner(ABC):  # pylint: disable=too-few-public-methods
             DEVICE_SERVICE: self._non_hs_service,
             MEDIAREMOTE_SERVICE: self._mrp_service,
             AIRPLAY_SERVICE: self._airplay_service,
+            COMPANION_SERVICE: self._companion_service,
         }
 
         handler = supported_types.get(service_type)
@@ -156,6 +160,12 @@ class BaseScanner(ABC):  # pylint: disable=too-few-public-methods
         service = conf.AirPlayService(identifier, port, properties=properties)
         self._handle_service(address, name, service)
 
+    def _companion_service(self, service_name, address, port, properties):
+        &#34;&#34;&#34;Add a new companion device to discovered list.&#34;&#34;&#34;
+        name = service_name.replace(&#34;.&#34; + COMPANION_SERVICE, &#34;&#34;)
+        service = conf.CompanionService(port, properties=properties)
+        self._handle_service(address, name, service)
+
     def _handle_service(self, address, name, service):
         if address not in self._found_devices:
             self._found_devices[address] = conf.AppleTV(address, name)
@@ -191,6 +201,7 @@ class ZeroconfScanner(BaseScanner):
                 ServiceBrowser(zeroconf, DEVICE_SERVICE, self),
                 ServiceBrowser(zeroconf, MEDIAREMOTE_SERVICE, self),
                 ServiceBrowser(zeroconf, AIRPLAY_SERVICE, self),
+                ServiceBrowser(zeroconf, COMPANION_SERVICE, self),
             ]
             _LOGGER.debug(&#34;Discovering devices for %d seconds&#34;, timeout)
             await asyncio.sleep(timeout)
@@ -377,6 +388,7 @@ async def pair(
         Protocol.DMAP: DmapPairingHandler,
         Protocol.MRP: MrpPairingHandler,
         Protocol.AirPlay: AirPlayPairingHandler,
+        Protocol.Companion: CompanionPairingHandler,
     }.get(protocol)
 
     if handler is None:
@@ -489,6 +501,7 @@ async def pair(
         Protocol.DMAP: DmapPairingHandler,
         Protocol.MRP: MrpPairingHandler,
         Protocol.AirPlay: AirPlayPairingHandler,
+        Protocol.Companion: CompanionPairingHandler,
     }.get(protocol)
 
     if handler is None:

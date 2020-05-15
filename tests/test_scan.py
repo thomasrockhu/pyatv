@@ -26,6 +26,8 @@ MRP_ID_2 = "mrp_id_2"
 
 AIRPLAY_ID = "AA:BB:CC:DD:EE:FF"
 
+COMPANION_PORT = 1234
+
 HOMESHARING_SERVICE_1 = zeroconf_stub.homesharing_service(
     "AAAA", b"Apple TV 1", IP_1, b"aaaa"
 )
@@ -40,6 +42,7 @@ MRP_SERVICE_1 = zeroconf_stub.mrp_service("DDDD", b"Apple TV\x00\xA04", IP_4, MR
 MRP_SERVICE_2 = zeroconf_stub.mrp_service("EEEE", b"Apple TV 5", IP_5, MRP_ID_2)
 AIRPLAY_SERVICE_1 = zeroconf_stub.airplay_service("Apple TV 6", IP_6, AIRPLAY_ID)
 AIRPLAY_SERVICE_2 = zeroconf_stub.airplay_service("Apple TV 4", IP_4, AIRPLAY_ID)
+COMPANION_SERVICE = zeroconf_stub.companion_service("Companion", IP_5, COMPANION_PORT)
 
 DEFAULT_KNOCK_PORTS = {3689, 7000, 49152, 32498}
 
@@ -96,6 +99,7 @@ async def test_zeroconf_scan(event_loop):
         HOMESHARING_SERVICE_2,
         MRP_SERVICE_1,
         AIRPLAY_SERVICE_1,
+        COMPANION_SERVICE,
     )
 
     atvs = await pyatv.scan(event_loop, timeout=0)
@@ -163,8 +167,32 @@ async def test_zeroconf_scan_mrp(event_loop):
 
 
 @pytest.mark.asyncio
+async def test_zeroconf_scan_mrp_with_companion(event_loop):
+    zeroconf_stub.stub(pyatv, MRP_SERVICE_2, COMPANION_SERVICE)
+
+    atvs = await pyatv.scan(event_loop, timeout=0)
+    assert len(atvs) == 1
+
+    dev = _get_atv(atvs, IP_5)
+    assert dev
+    assert dev.get_service(Protocol.MRP)
+
+    companion = dev.get_service(Protocol.Companion)
+    assert companion
+    assert companion.port == COMPANION_PORT
+
+
+@pytest.mark.asyncio
 async def test_zeroconf_scan_airplay_device(event_loop):
     zeroconf_stub.stub(pyatv, AIRPLAY_SERVICE_1)
+
+    atvs = await pyatv.scan(event_loop, timeout=0)
+    assert len(atvs) == 0
+
+
+@pytest.mark.asyncio
+async def test_zeroconf_scan_companion_device(event_loop):
+    zeroconf_stub.stub(pyatv, COMPANION_SERVICE)
 
     atvs = await pyatv.scan(event_loop, timeout=0)
     assert len(atvs) == 0
@@ -228,6 +256,14 @@ async def test_udns_scan_mrp(udns_server, udns_scan):
 @pytest.mark.asyncio
 async def test_udns_scan_airplay(udns_server, udns_scan):
     udns_server.add_service(fake_udns.airplay_service("Apple TV", AIRPLAY_ID))
+
+    atvs = await udns_scan()
+    assert len(atvs) == 0
+
+
+@pytest.mark.asyncio
+async def test_udns_scan_companion(udns_server, udns_scan):
+    udns_server.add_service(fake_udns.companion_service("Apple TV", COMPANION_PORT))
 
     atvs = await udns_scan()
     assert len(atvs) == 0
