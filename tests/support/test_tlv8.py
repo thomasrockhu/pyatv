@@ -3,7 +3,7 @@
 import unittest
 
 from collections import OrderedDict
-from pyatv.mrp.tlv8 import read_tlv, write_tlv
+from pyatv.support.tlv8 import read_tlv, write_tlv
 
 SINGLE_KEY_IN = {"10": b"123"}
 SINGLE_KEY_OUT = b"\x0a\x03\x31\x32\x33"

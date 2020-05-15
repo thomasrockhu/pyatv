@@ -4,7 +4,7 @@ import binascii
 
 from pyatv import const
 from pyatv.mrp import protobuf
-from pyatv.mrp import tlv8
+from pyatv.support import tlv8
 
 
 def create(message_type, error_code=0, identifier=None):

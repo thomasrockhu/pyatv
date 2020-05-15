@@ -4,8 +4,9 @@ import logging
 
 from pyatv import exceptions
 from pyatv.support import log_binary
-from pyatv.mrp import tlv8, messages
+from pyatv.mrp import messages
 from pyatv.mrp.protobuf import CryptoPairingMessage_pb2 as CryptoPairingMessage
+from pyatv.support import tlv8
 
 _LOGGER = logging.getLogger(__name__)
 
