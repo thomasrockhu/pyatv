@@ -105,7 +105,8 @@ class CompanionPairingProcedure:
                     tlv8.TLV_PUBLIC_KEY: pub_key,
                     tlv8.TLV_PROOF: proof,
                 }
-            )
+            ),
+            "_pwTy": 1,
         }
 
         resp = await self._send_and_receive(FrameType.PS_Next, msg)
