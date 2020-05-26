@@ -165,11 +165,11 @@ class SRPAuthHandler:
         The derived keys (output, input) are returned here.
         """
         output_key = hkdf_expand(
-            "MediaRemote-Salt", "MediaRemote-Write-Encryption-Key", self._shared
+            "IdentityProofClient-Salt", "IdentityProofClient-Info", self._shared
         )
 
         input_key = hkdf_expand(
-            "MediaRemote-Salt", "MediaRemote-Read-Encryption-Key", self._shared
+            "IdentityProofClient-Salt", "IdentityProofClient-Info", self._shared
         )
 
         log_binary(_LOGGER, "Keys", Output=output_key, Input=input_key)
