@@ -117,7 +117,8 @@ class CompanionPairingProcedure:
 
         encrypted_data = self.srp.step3()
         msg = {
-            "_pd": {tlv8.TLV_SEQ_NO: b"\x05", tlv8.TLV_ENCRYPTED_DATA: encrypted_data}
+            "_pd": tlv8.write_tlv({tlv8.TLV_SEQ_NO: b"\x05", tlv8.TLV_ENCRYPTED_DATA: encrypted_data}),
+            "_pwTy": 1,
         }
         resp = await self._send_and_receive(FrameType.PS_Next, msg)
 
