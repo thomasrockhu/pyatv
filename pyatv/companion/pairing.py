@@ -8,6 +8,7 @@ from pyatv.const import Protocol
 from pyatv.interface import PairingHandler
 from pyatv.companion.connection import CompanionConnection
 from pyatv.companion.auth import CompanionPairingProcedure
+from pyatv.companion.protocol import CompanionProtocol
 from pyatv.companion.srp import SRPAuthHandler
 from pyatv.support import error_handler, log_binary
 
@@ -22,13 +23,14 @@ class CompanionPairingHandler(PairingHandler):
         super().__init__(session, config.get_service(Protocol.Companion))
         self.connection = CompanionConnection(loop, config.address, self.service.port)
         self.srp = SRPAuthHandler()
-        self.pairing_procedure = CompanionPairingProcedure(self.connection, self.srp)
+        self.protocol = CompanionProtocol(self.connection, self.srp, self.service)
+        self.pairing_procedure = CompanionPairingProcedure(self.protocol, self.srp)
         self.pin_code = None
         self._has_paired = False
 
     async def close(self):
         """Call to free allocated resources after pairing."""
-        self.connection.close()
+        self.protocol.stop()
         await super().close()
 
     @property
